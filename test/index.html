@@ -8,11 +8,15 @@
 <div id="textStyle">富文本内容：<a href="#" style="margin-left:10px;" class="normal">normal</a><a href="#" class="special" style="margin-left:10px;">特殊字符</a><a href="#" class="font" style="margin-left:10px;">含有字体</a><a href="#" class="video" style="margin-left:10px;">视频</a>
 </div>
 <textarea id="content" style="width:100%;height:140px">
-	<div id="welefne" class="welefen test">welefen</div>
+	<div id="welefen" class="welefen test">welefen</div>
 </textarea>
 <div style="text-align:center"><button id="save" style="padding:7px 15px;font-size:24px;line-height:24px">保存</button></div>
 <div style="margin-top:20px;border-top:1px solid #ddd;padding-top:10px">
-相关数据：&nbsp;&nbsp;&nbsp;&nbsp;<span id="textLength" style="color:#ccc"></span><span id="jsonLength" style="color:#ccc;margin-left:10px;"></span><span id="jsonTime" style="color:#ccc;margin-left:10px"></span><span id="htmlTime" style="color:#ccc;margin-left:10px;"></span>
+相关数据：&nbsp;&nbsp;&nbsp;&nbsp;<span id="textLength" style="color:#ccc"></span>
+<span id="jsonLength" style="color:#ccc;margin-left:10px;"></span>
+<span id="rate" style="color:#ccc;margin-left:10px;"></span>
+<span id="jsonTime" style="color:#ccc;margin-left:10px"></span>
+<span id="htmlTime" style="color:#ccc;margin-left:10px;"></span>
 </div>
 <div style="margin-top:10px;">
 转化后的JSON数据：
@@ -53,18 +57,20 @@ Dom.ready(function(){
 			content.focus();
 		}
 		QW.g('textLength').innerHTML = '富文本长度：'+ value.length;
+		var richLength = value.length;
 		var startTime = new Date()*1;
 		value = html2json(value, JSON.stringify);
 		var endTime = new Date()*1;
-		QW.g('jsonTime').innerHTML = 'HTML2JSON时间：' + (endTime - startTime)+ 'ms'
+		QW.g('jsonTime').innerHTML = 'JS执行时间：' + (endTime - startTime)+ 'ms'
 		QW.g('json').value = value;
 		QW.g('jsonLength').innerHTML = 'JSON长度：'+ value.length;
+		QW.g('rate').innerHTML = "增加比例：" + ((value.length - richLength)*100/richLength).toFixed(2) + '%';
 		QW.g('save').disabled = true;
 		Ajax.post("./json2html.php",{
 			content: value
 		}, function(text){
 			text = JSON.parse(text);
-			QW.g('htmlTime').innerHTML = 'JSON2HTML时间：' + text.time + 'ms'
+			QW.g('htmlTime').innerHTML = '后端执行时间：' + text.time + 'ms'
 			QW.g('save').disabled = false;
 			QW.g('output').value = text.text;
 			QW.g('preview').innerHTML = text.text;
