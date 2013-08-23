@@ -20,7 +20,9 @@ this.html2json = (function() {
 			var item = childNodes[i];
 			if (item.nodeType == 3) {
 				var obj = {};
-				obj[config.text] = item.nodeValue;
+				var text = item.nodeValue;
+				text = text.replace(/ +/g, ' ');
+				obj[config.text] = text;
 				result.push(obj);
 			} else if (item.nodeType == 1) {
 				var obj = {};
@@ -85,7 +87,7 @@ this.html2json = (function() {
 	 * @return {[text]}
 	 */
 	var html2json = function(text, attrs) {
-		div = div || document.createElement('div');
+		div = document.createElement('div');
 		div.innerHTML = text;
 		attrs = attrs || defaultBlankAttrs;
 		var ie6 = /MSIE 6/.test(navigator.userAgent), allAttrs, len;
@@ -93,6 +95,7 @@ this.html2json = (function() {
 			attrs = null;
 		}
 		var result = getJson(div.childNodes, attrs);
+		div = null;
 		return JSON.stringify(result);
 	};
 	return html2json;
